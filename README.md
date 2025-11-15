@@ -29,8 +29,49 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 
 ## Local Development
 
-### Prerequisites
+You can run the API either **directly with .NET** (fastest for development) or **via Kubernetes** (production-like environment).
 
+### Quick Start - Run Directly with .NET
+
+**Prerequisites:**
+- .NET 10.0 SDK
+- MySQL running locally (or update connection string in appsettings.json)
+
+**Steps:**
+
+```bash
+# Navigate to the API project
+cd app/PayloadApi
+
+# Run the application
+dotnet run
+
+# Or run with watch mode (auto-restart on file changes)
+dotnet watch run
+```
+
+The API will start on `http://localhost:5038` (configured in `Properties/launchSettings.json`).
+
+**Test it:**
+```bash
+# V1 endpoint
+curl -X POST http://localhost:5038/api/v1/Payload \
+  -H 'Content-Type: application/json' \
+  -d '{"content":"test payload"}'
+
+# V2 endpoint
+curl -X POST http://localhost:5038/api/v2/Payload \
+  -H 'Content-Type: application/json' \
+  -d '{"content":"test","source":"curl","priority":"high"}'
+```
+
+**OpenAPI docs (Development only):**
+- V1: http://localhost:5038/openapi/v1.json
+- V2: http://localhost:5038/openapi/v2.json
+
+### Kubernetes Deployment (Production-like)
+
+**Prerequisites:**
 - Docker
 - kubectl
 - ansible-vault (from ansible package)
@@ -73,7 +114,7 @@ ansible-vault decrypt secrets/local.yml --output=secrets/local.decrypted.yml --v
 ansible-vault edit secrets/local.yml --vault-password-file=.vault
 ```
 
-### Deploy Locally
+### Deploy to Local Kubernetes
 
 ```bash
 # Deploy with default version (latest)
