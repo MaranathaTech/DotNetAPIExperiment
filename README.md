@@ -92,26 +92,29 @@ minikube addons enable ingress
 
 ### Secrets Configuration
 
-The project includes a `.vault` file containing the vault password (`password123`). This file is **gitignored** for security.
+**Secrets are encrypted** with ansible-vault using the password: `password123` (this is a test/learning project).
 
-**Secrets are already encrypted** with ansible-vault. To view or edit them:
+To view or edit secrets manually:
 
 ```bash
-# View encrypted secret
-ansible-vault view secrets/local.yml --vault-password-file=.vault
+# View encrypted secret (will prompt for password: password123)
+ansible-vault view secrets/local.yml
 
-# Edit encrypted secret
-ansible-vault edit secrets/local.yml --vault-password-file=.vault
+# Edit encrypted secret (will prompt for password: password123)
+ansible-vault edit secrets/local.yml
 
-# Decrypt to file (not recommended - auto-cleaned by deployment)
-ansible-vault decrypt secrets/local.yml --output=secrets/local.decrypted.yml --vault-password-file=.vault
+# Or use a password file for automation
+echo "password123" > .vault-pass
+ansible-vault view secrets/local.yml --vault-password-file=.vault-pass
+rm .vault-pass  # Clean up
 ```
 
 **To re-encrypt secrets** (if you need to change them):
 
 ```bash
 # Edit the secret (decrypts, opens editor, re-encrypts on save)
-ansible-vault edit secrets/local.yml --vault-password-file=.vault
+# Will prompt for password: password123
+ansible-vault edit secrets/local.yml
 ```
 
 ### Deploy to Local Kubernetes
@@ -126,12 +129,13 @@ ansible-vault edit secrets/local.yml --vault-password-file=.vault
 
 The script will:
 1. Check if namespace exists (prompt to delete if needed)
-2. Decrypt secrets automatically (uses `.vault` file - no prompt needed)
-3. **Build Docker image and run all tests** (build fails if tests fail)
-4. Load image into local cluster
-5. Deploy to Kubernetes
-6. Wait for deployment to be ready
-7. Auto-cleanup decrypted secrets
+2. Prompt for ansible-vault password (enter: `password123`)
+3. Decrypt secrets
+4. **Build Docker image and run all tests** (build fails if tests fail)
+5. Load image into local cluster
+6. Deploy to Kubernetes
+7. Wait for deployment to be ready
+8. Auto-cleanup decrypted secrets
 
 **Note:** The Docker build includes running all unit tests. The image will only be created if all tests pass!
 
@@ -178,8 +182,8 @@ For dev and prod environments, use the Jenkins pipeline.
 
 Configure these credentials in Jenkins:
 
-1. **ansible-vault-password** (Secret file)
-   - Upload your vault password file
+1. **ansible-vault-password** (Secret text)
+   - The ansible-vault password (for this test project: `password123`)
 
 2. **kubeconfig-dev** (Secret file)
    - Upload your dev cluster kubeconfig

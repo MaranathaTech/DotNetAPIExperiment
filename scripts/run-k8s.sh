@@ -81,16 +81,20 @@ fi
 
 echo -e "${YELLOW}Decrypting secrets for $ENVIRONMENT environment...${NC}"
 
-# Check for vault password file
-VAULT_PASSWORD_FILE="$PROJECT_ROOT/.vault"
-if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
-    echo -e "${RED}Error: Vault password file not found: $VAULT_PASSWORD_FILE${NC}"
-    exit 1
-fi
-
 # Check if file is encrypted
 if grep -q "\$ANSIBLE_VAULT" "$ENCRYPTED_SECRETS"; then
-    ansible-vault decrypt "$ENCRYPTED_SECRETS" --output="$DECRYPTED_SECRETS" --vault-password-file="$VAULT_PASSWORD_FILE"
+    echo ""
+    echo -e "${BLUE}===========================================${NC}"
+    echo -e "${BLUE}Ansible Vault Password Required${NC}"
+    echo -e "${BLUE}===========================================${NC}"
+    echo ""
+    echo -e "${YELLOW}This is a test project. The vault password is: ${GREEN}password123${NC}"
+    echo ""
+    echo -e "You will be prompted to enter the password below."
+    echo ""
+
+    # Prompt for password (ansible-vault will ask for it)
+    ansible-vault decrypt "$ENCRYPTED_SECRETS" --output="$DECRYPTED_SECRETS"
 else
     echo -e "${YELLOW}⚠ WARNING: Secrets file is NOT encrypted!${NC}"
     cp "$ENCRYPTED_SECRETS" "$DECRYPTED_SECRETS"
