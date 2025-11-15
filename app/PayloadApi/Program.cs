@@ -13,7 +13,12 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+
+// Add OpenAPI only in Development environment
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddOpenApi();
+}
 
 // Add HTTP request logging
 builder.Services.AddHttpLogging(logging =>
@@ -36,10 +41,15 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("PayloadApi starting up. Environment: {Environment}", app.Environment.EnvironmentName);
 
 // Configure the HTTP request pipeline.
+// SECURITY: OpenAPI endpoint is ONLY available in Development
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     logger.LogInformation("OpenAPI documentation enabled at /openapi/v1.json");
+}
+else
+{
+    logger.LogInformation("OpenAPI documentation disabled (Production/Staging mode)");
 }
 
 // Enable HTTP request logging
