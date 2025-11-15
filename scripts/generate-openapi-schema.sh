@@ -23,7 +23,7 @@ echo ""
 # Build the project
 echo -e "${YELLOW}Building PayloadApi...${NC}"
 cd "$PROJECT_ROOT"
-dotnet build PayloadApi.sln -c Release > /dev/null 2>&1
+dotnet build app/PayloadApi.sln -c Release > /dev/null 2>&1
 echo -e "${GREEN}✓ Build complete${NC}"
 echo ""
 

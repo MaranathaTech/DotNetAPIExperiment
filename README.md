@@ -8,7 +8,8 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 .
 ├── app/
 │   ├── PayloadApi/              # Main API project
-│   └── PayloadApi.Tests/        # Unit tests
+│   ├── PayloadApi.Tests/        # Unit tests
+│   └── PayloadApi.sln           # Solution file
 ├── k8s/                         # Kubernetes manifests
 │   ├── local/                   # Local environment
 │   ├── dev/                     # Dev environment
@@ -22,7 +23,6 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 │   └── generate-openapi-schema.sh
 ├── Dockerfile                   # Multi-stage build with tests
 ├── .dockerignore                # Docker build exclusions
-├── PayloadApi.sln               # Solution file
 ├── Jenkinsfile                  # CI/CD pipeline for dev/prod
 └── .gitignore
 ```

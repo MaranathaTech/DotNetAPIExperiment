@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copy solution file
-COPY PayloadApi.sln .
+COPY app/PayloadApi.sln .
 
 # Copy project files
 COPY app/PayloadApi/PayloadApi.csproj app/PayloadApi/
