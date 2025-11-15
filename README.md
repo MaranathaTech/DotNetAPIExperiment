@@ -189,11 +189,64 @@ The Jenkinsfile will:
 - Host: `payloadapi.example.com`
 - SSL redirect enabled
 
+## API Versioning
+
+The API uses **URL path versioning** to support multiple versions simultaneously, allowing breaking changes while maintaining backward compatibility for existing clients.
+
+### Current Versions
+
+**V1** - `/api/v1/Payload`
+- Original implementation
+- Simple request/response format
+- Maintained for backward compatibility
+
+**V2** - `/api/v2/Payload`
+- Enhanced with metadata (source, priority)
+- Structured error responses
+- Recommended for new clients
+
+### Creating a New Version
+
+When you need to make **breaking changes** (changing request/response structure, removing fields, etc.):
+
+1. Create a new controller in `Controllers/V{N}/`
+2. Add `[ApiVersion("{N}.0")]` attribute
+3. Implement your changes
+4. Update the OpenAPI configuration in `Program.cs`
+5. Generate new schemas with the script
+
+**Example: Creating V3**
+
+```csharp
+namespace PayloadApi.Controllers.V3;
+
+[ApiController]
+[ApiVersion("3.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
+public class PayloadController : ControllerBase
+{
+    // Your V3 implementation with breaking changes
+}
+```
+
+Then add to `Program.cs`:
+```csharp
+builder.Services.AddOpenApi("v3", options => { /* ... */ });
+```
+
+### Versioning Best Practices
+
+- **Breaking changes** → New version
+- **Non-breaking changes** (new optional fields, new endpoints) → Add to current version
+- Keep old versions running until all clients migrate
+- Set a **deprecation date** for old versions
+- Document changes between versions clearly
+
 ## API Documentation
 
-The project generates an OpenAPI 3.1 schema for integration with your internal API documentation server.
+The project generates OpenAPI 3.1 schemas for each API version for integration with your internal API documentation server.
 
-### Generate OpenAPI Schema
+### Generate OpenAPI Schemas
 
 ```bash
 ./scripts/generate-openapi-schema.sh
@@ -202,11 +255,11 @@ The project generates an OpenAPI 3.1 schema for integration with your internal A
 This will:
 - Build the application
 - Start it temporarily
-- Download the OpenAPI JSON from `/openapi/v1.json`
-- Save it to `docs/openapi.json`
+- Download OpenAPI JSONs from `/openapi/v1.json` and `/openapi/v2.json`
+- Save them to `docs/openapi-v1.json` and `docs/openapi-v2.json`
 - Automatically stop the application
 
-**Output:** `docs/openapi.json` - Ready to upload to your API docs server
+**Output:** `docs/openapi-v1.json` and `docs/openapi-v2.json` - Ready to upload to your API docs server
 
 ### When to Regenerate
 
@@ -215,6 +268,7 @@ Run the schema generator whenever you:
 - Modify existing endpoints
 - Change request/response models
 - Update API documentation
+- Create a new API version
 
 ## Running Tests
 

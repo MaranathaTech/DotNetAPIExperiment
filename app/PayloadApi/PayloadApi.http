@@ -10,20 +10,22 @@
 ### Kubernetes Ingress (add to /etc/hosts: 127.0.0.1 payloadapi.local)
 # @PayloadApi_HostAddress = http://payloadapi.local
 
-###
+###############################################################################
+# API V1 Tests - Original format for backward compatibility
+###############################################################################
 
-### Test 1: POST Payload - Success
-POST {{PayloadApi_HostAddress}}/api/Payload
+### V1 Test 1: POST Payload - Success
+POST {{PayloadApi_HostAddress}}/api/v1/Payload
 Content-Type: application/json
 
 {
-  "content": "This is a test payload from .http file"
+  "content": "This is a V1 test payload"
 }
 
 ###
 
-### Test 2: POST Payload - Empty Content (should fail validation)
-POST {{PayloadApi_HostAddress}}/api/Payload
+### V1 Test 2: POST Payload - Empty Content (should fail validation)
+POST {{PayloadApi_HostAddress}}/api/v1/Payload
 Content-Type: application/json
 
 {
@@ -32,22 +34,74 @@ Content-Type: application/json
 
 ###
 
-### Test 3: POST Payload - Null Content (should fail validation)
-POST {{PayloadApi_HostAddress}}/api/Payload
-Content-Type: application/json
-
-{
-  "content": null
-}
-
-###
-
-### Test 4: POST Payload - Large Content
-POST {{PayloadApi_HostAddress}}/api/Payload
+### V1 Test 3: POST Payload - Large Content
+POST {{PayloadApi_HostAddress}}/api/v1/Payload
 Content-Type: application/json
 
 {
   "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+}
+
+###
+
+###############################################################################
+# API V2 Tests - Enhanced format with metadata
+###############################################################################
+
+### V2 Test 1: POST Payload - Success with metadata
+POST {{PayloadApi_HostAddress}}/api/v2/Payload
+Content-Type: application/json
+
+{
+  "content": "This is a V2 test payload with enhanced features",
+  "source": "mobile-app",
+  "priority": "high"
+}
+
+###
+
+### V2 Test 2: POST Payload - Normal priority
+POST {{PayloadApi_HostAddress}}/api/v2/Payload
+Content-Type: application/json
+
+{
+  "content": "Regular priority payload from web client",
+  "source": "web-portal",
+  "priority": "normal"
+}
+
+###
+
+### V2 Test 3: POST Payload - Empty Content (should fail with structured error)
+POST {{PayloadApi_HostAddress}}/api/v2/Payload
+Content-Type: application/json
+
+{
+  "content": "",
+  "source": "test-client",
+  "priority": "low"
+}
+
+###
+
+### V2 Test 4: POST Payload - Large content with metadata
+POST {{PayloadApi_HostAddress}}/api/v2/Payload
+Content-Type: application/json
+
+{
+  "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+  "source": "integration-test",
+  "priority": "normal"
+}
+
+###
+
+### V2 Test 5: POST Payload - Minimal (source and priority are optional)
+POST {{PayloadApi_HostAddress}}/api/v2/Payload
+Content-Type: application/json
+
+{
+  "content": "Minimal V2 payload without optional fields"
 }
 
 ###

@@ -70,40 +70,53 @@ for i in {1..30}; do
 done
 echo ""
 
-# Download OpenAPI schema
-echo -e "${YELLOW}Downloading OpenAPI schema...${NC}"
-HTTP_STATUS=$(curl -s -o "$OUTPUT_FILE" -w "%{http_code}" http://localhost:5038/openapi/v1.json)
+# Download OpenAPI schemas for all versions
+echo -e "${YELLOW}Downloading OpenAPI schemas...${NC}"
 
-if [ "$HTTP_STATUS" -eq 200 ]; then
-    echo -e "${GREEN}✓ Schema downloaded successfully${NC}"
+# Download V1 schema
+OUTPUT_FILE_V1="$PROJECT_ROOT/docs/openapi-v1.json"
+HTTP_STATUS_V1=$(curl -s -o "$OUTPUT_FILE_V1" -w "%{http_code}" http://localhost:5038/openapi/v1.json)
+
+if [ "$HTTP_STATUS_V1" -eq 200 ]; then
+    echo -e "${GREEN}✓ V1 schema downloaded successfully${NC}"
 else
-    echo -e "${RED}Error: Failed to download schema (HTTP $HTTP_STATUS)${NC}"
+    echo -e "${RED}Error: Failed to download V1 schema (HTTP $HTTP_STATUS_V1)${NC}"
     exit 1
 fi
 
-# Pretty print the JSON (optional)
+# Download V2 schema
+OUTPUT_FILE_V2="$PROJECT_ROOT/docs/openapi-v2.json"
+HTTP_STATUS_V2=$(curl -s -o "$OUTPUT_FILE_V2" -w "%{http_code}" http://localhost:5038/openapi/v2.json)
+
+if [ "$HTTP_STATUS_V2" -eq 200 ]; then
+    echo -e "${GREEN}✓ V2 schema downloaded successfully${NC}"
+else
+    echo -e "${RED}Error: Failed to download V2 schema (HTTP $HTTP_STATUS_V2)${NC}"
+    exit 1
+fi
+
+# Pretty print the JSON files (optional)
 if command -v jq &> /dev/null; then
     echo -e "${YELLOW}Formatting JSON with jq...${NC}"
-    jq '.' "$OUTPUT_FILE" > "${OUTPUT_FILE}.tmp" && mv "${OUTPUT_FILE}.tmp" "$OUTPUT_FILE"
+    jq '.' "$OUTPUT_FILE_V1" > "${OUTPUT_FILE_V1}.tmp" && mv "${OUTPUT_FILE_V1}.tmp" "$OUTPUT_FILE_V1"
+    jq '.' "$OUTPUT_FILE_V2" > "${OUTPUT_FILE_V2}.tmp" && mv "${OUTPUT_FILE_V2}.tmp" "$OUTPUT_FILE_V2"
     echo -e "${GREEN}✓ JSON formatted${NC}"
 fi
 
 echo ""
 echo -e "${GREEN}=====================================${NC}"
-echo -e "${GREEN}Schema Generated Successfully!${NC}"
+echo -e "${GREEN}Schemas Generated Successfully!${NC}"
 echo -e "${GREEN}=====================================${NC}"
 echo ""
-echo -e "${BLUE}Output location:${NC}"
-echo "  $OUTPUT_FILE"
+echo -e "${BLUE}Output locations:${NC}"
+echo "  V1: $OUTPUT_FILE_V1"
+echo "  V2: $OUTPUT_FILE_V2"
 echo ""
 
-# Show file size
-FILE_SIZE=$(du -h "$OUTPUT_FILE" | cut -f1)
-echo -e "${BLUE}File size:${NC} $FILE_SIZE"
-echo ""
-
-# Show a preview of the schema
-echo -e "${BLUE}Preview (first 10 lines):${NC}"
-head -n 10 "$OUTPUT_FILE"
-echo "..."
+# Show file sizes
+FILE_SIZE_V1=$(du -h "$OUTPUT_FILE_V1" | cut -f1)
+FILE_SIZE_V2=$(du -h "$OUTPUT_FILE_V2" | cut -f1)
+echo -e "${BLUE}File sizes:${NC}"
+echo "  V1: $FILE_SIZE_V1"
+echo "  V2: $FILE_SIZE_V2"
 echo ""

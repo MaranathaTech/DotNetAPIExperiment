@@ -1,8 +1,9 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "PayloadApi | v1",
-    "version": "1.0.0"
+    "title": "PayloadApi V2",
+    "description": "Enhanced Payload API with metadata support and structured responses",
+    "version": "2.0"
   },
   "servers": [
     {
@@ -10,7 +11,7 @@
     }
   ],
   "paths": {
-    "/api/Payload": {
+    "/api/v2/Payload": {
       "post": {
         "tags": [
           "Payload"
@@ -19,17 +20,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PayloadRequest"
+                "$ref": "#/components/schemas/PayloadRequestV2"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/PayloadRequest"
+                "$ref": "#/components/schemas/PayloadRequestV2"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/PayloadRequest"
+                "$ref": "#/components/schemas/PayloadRequestV2"
               }
             }
           },
@@ -45,7 +46,10 @@
   },
   "components": {
     "schemas": {
-      "PayloadRequest": {
+      "PayloadRequestV2": {
+        "required": [
+          "content"
+        ],
         "type": "object",
         "properties": {
           "content": {
@@ -53,6 +57,15 @@
               "null",
               "string"
             ]
+          },
+          "source": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "priority": {
+            "type": "string"
           }
         }
       }
