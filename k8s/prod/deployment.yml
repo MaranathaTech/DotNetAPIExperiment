@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payloadapi
+  namespace: payloadapi-prod
+  labels:
+    app: payloadapi
+    environment: prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: payloadapi
+  template:
+    metadata:
+      labels:
+        app: payloadapi
+        environment: prod
+    spec:
+      serviceAccountName: payloadapi
+      containers:
+      - name: payloadapi
+        image: payloadapi:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: payloadapi-config
+        env:
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: payloadapi-secrets
+              key: ConnectionStrings__DefaultConnection
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5

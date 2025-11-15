@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payloadapi-prod
+  labels:
+    name: payloadapi-prod
+    environment: prod

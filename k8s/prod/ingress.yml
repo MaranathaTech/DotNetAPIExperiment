@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payloadapi-ingress
+  namespace: payloadapi-prod
+  labels:
+    app: payloadapi
+    environment: prod
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: payloadapi.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: payloadapi
+            port:
+              number: 80
+  # Uncomment to enable TLS
+  # tls:
+  # - hosts:
+  #   - payloadapi.example.com
+  #   secretName: payloadapi-tls

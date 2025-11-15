@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payloadapi-local
+  labels:
+    name: payloadapi-local
+    environment: local
