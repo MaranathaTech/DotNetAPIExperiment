@@ -18,7 +18,8 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 │   ├── dev.yml
 │   └── prod.yml
 ├── scripts/
-│   └── run.sh                   # Local deployment script
+│   ├── run-k8s.sh               # Local Kubernetes deployment script
+│   └── generate-openapi-schema.sh
 ├── Dockerfile                   # Multi-stage build with tests
 ├── .dockerignore                # Docker build exclusions
 ├── PayloadApi.sln               # Solution file
@@ -76,10 +77,10 @@ ansible-vault edit secrets/local.yml --vault-password-file=.vault
 
 ```bash
 # Deploy with default version (latest)
-./scripts/run.sh
+./scripts/run-k8s.sh
 
 # Deploy with specific version
-./scripts/run.sh v1.0.0
+./scripts/run-k8s.sh v1.0.0
 ```
 
 The script will:
