@@ -189,6 +189,33 @@ The Jenkinsfile will:
 - Host: `payloadapi.example.com`
 - SSL redirect enabled
 
+## API Documentation
+
+The project generates an OpenAPI 3.1 schema for integration with your internal API documentation server.
+
+### Generate OpenAPI Schema
+
+```bash
+./scripts/generate-openapi-schema.sh
+```
+
+This will:
+- Build the application
+- Start it temporarily
+- Download the OpenAPI JSON from `/openapi/v1.json`
+- Save it to `docs/openapi.json`
+- Automatically stop the application
+
+**Output:** `docs/openapi.json` - Ready to upload to your API docs server
+
+### When to Regenerate
+
+Run the schema generator whenever you:
+- Add new endpoints
+- Modify existing endpoints
+- Change request/response models
+- Update API documentation
+
 ## Running Tests
 
 Tests are automatically run during Docker image build. You can also run them manually:
