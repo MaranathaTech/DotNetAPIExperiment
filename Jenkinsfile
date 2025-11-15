@@ -60,16 +60,14 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Image and Run Tests') {
             steps {
-                dir('app/PayloadApi') {
-                    script {
-                        sh """
-                            docker build -t ${PROJECT_NAME}:${params.VERSION} .
-                            docker tag ${PROJECT_NAME}:${params.VERSION} ${REGISTRY}/${PROJECT_NAME}:${params.VERSION}
-                            docker tag ${PROJECT_NAME}:${params.VERSION} ${REGISTRY}/${PROJECT_NAME}:${params.ENVIRONMENT}-latest
-                        """
-                    }
+                script {
+                    sh """
+                        docker build -t ${PROJECT_NAME}:${params.VERSION} .
+                        docker tag ${PROJECT_NAME}:${params.VERSION} ${REGISTRY}/${PROJECT_NAME}:${params.VERSION}
+                        docker tag ${PROJECT_NAME}:${params.VERSION} ${REGISTRY}/${PROJECT_NAME}:${params.ENVIRONMENT}-latest
+                    """
                 }
             }
         }

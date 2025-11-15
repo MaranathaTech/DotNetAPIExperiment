@@ -38,7 +38,7 @@ public class PayloadController : ControllerBase
             };
 
             _logger.LogDebug("Creating payload entity. Content: {Content}, ReceivedAt: {ReceivedAt}",
-                payload.Content?.Substring(0, Math.Min(50, payload.Content.Length ?? 0)),
+                payload.Content?.Substring(0, Math.Min(50, payload.Content?.Length ?? 0)),
                 payload.ReceivedAt);
 
             _context.Payloads.Add(payload);

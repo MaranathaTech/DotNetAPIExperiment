@@ -19,6 +19,9 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 │   └── prod.yml
 ├── scripts/
 │   └── run.sh                   # Local deployment script
+├── Dockerfile                   # Multi-stage build with tests
+├── .dockerignore                # Docker build exclusions
+├── PayloadApi.sln               # Solution file
 ├── Jenkinsfile                  # CI/CD pipeline for dev/prod
 └── .gitignore
 ```
@@ -82,11 +85,13 @@ ansible-vault edit secrets/local.yml --vault-password-file=.vault
 The script will:
 1. Check if namespace exists (prompt to delete if needed)
 2. Decrypt secrets automatically (uses `.vault` file - no prompt needed)
-3. Build Docker image
+3. **Build Docker image and run all tests** (build fails if tests fail)
 4. Load image into local cluster
 5. Deploy to Kubernetes
 6. Wait for deployment to be ready
 7. Auto-cleanup decrypted secrets
+
+**Note:** The Docker build includes running all unit tests. The image will only be created if all tests pass!
 
 ### Access the API
 
@@ -186,10 +191,20 @@ The Jenkinsfile will:
 
 ## Running Tests
 
+Tests are automatically run during Docker image build. You can also run them manually:
+
 ```bash
-cd app/PayloadApi.Tests
+# Run all tests in the solution
 dotnet test
+
+# Run tests for specific project
+dotnet test app/PayloadApi.Tests/PayloadApi.Tests.csproj
+
+# Run tests with detailed output
+dotnet test --verbosity detailed
 ```
+
+**Important:** Docker builds will fail if any tests fail, ensuring only tested code gets deployed!
 
 ## Logging
 

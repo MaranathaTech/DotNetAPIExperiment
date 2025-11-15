@@ -144,11 +144,11 @@ if kubectl get namespace "$NAMESPACE" &>/dev/null; then
     echo ""
 fi
 
-# Build Docker image
-echo -e "${YELLOW}Building Docker image...${NC}"
-cd "$PROJECT_ROOT/app/PayloadApi"
+# Build Docker image (includes running tests)
+echo -e "${YELLOW}Building Docker image and running tests...${NC}"
+cd "$PROJECT_ROOT"
 docker build -t payloadapi:$VERSION .
-echo -e "${GREEN}✓ Docker image built: payloadapi:$VERSION${NC}"
+echo -e "${GREEN}✓ Docker image built and tests passed: payloadapi:$VERSION${NC}"
 echo ""
 
 # Load image into local cluster

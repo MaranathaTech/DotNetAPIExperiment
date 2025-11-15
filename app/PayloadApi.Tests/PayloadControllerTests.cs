@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using PayloadApi.Controllers;
 using PayloadApi.Data;
 using PayloadApi.Models;
@@ -17,7 +19,8 @@ public class PayloadControllerTests
             .Options;
 
         using var context = new ApplicationDbContext(options);
-        var controller = new PayloadController(context);
+        var logger = NullLogger<PayloadController>.Instance;
+        var controller = new PayloadController(context, logger);
         var request = new PayloadRequest { Content = "Test payload content" };
 
         // Act - Execute the method we're testing
@@ -44,7 +47,8 @@ public class PayloadControllerTests
         var context = new ApplicationDbContext(options);
         context.Dispose(); // Dispose to cause an error when trying to save
 
-        var controller = new PayloadController(context);
+        var logger = NullLogger<PayloadController>.Instance;
+        var controller = new PayloadController(context, logger);
         var request = new PayloadRequest { Content = "Test content" };
 
         // Act

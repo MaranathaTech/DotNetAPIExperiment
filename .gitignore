@@ -394,3 +394,6 @@ k8s/**/secret.yml
 .vault_pass
 .vault_password
 vault_pass.txt
+
+# Solution files (XML format - prefer traditional .sln)
+*.slnx
