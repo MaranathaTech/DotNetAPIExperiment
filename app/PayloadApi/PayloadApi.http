@@ -1,6 +1,53 @@
+### PayloadApi HTTP Requests
+### Use this file to test your API endpoints directly from your IDE
+
+### Local Development
 @PayloadApi_HostAddress = http://localhost:5038
 
-GET {{PayloadApi_HostAddress}}/weatherforecast/
-Accept: application/json
+### Kubernetes Port Forward
+# @PayloadApi_HostAddress = http://localhost:8080
+
+### Kubernetes Ingress (add to /etc/hosts: 127.0.0.1 payloadapi.local)
+# @PayloadApi_HostAddress = http://payloadapi.local
+
+###
+
+### Test 1: POST Payload - Success
+POST {{PayloadApi_HostAddress}}/api/Payload
+Content-Type: application/json
+
+{
+  "content": "This is a test payload from .http file"
+}
+
+###
+
+### Test 2: POST Payload - Empty Content (should fail validation)
+POST {{PayloadApi_HostAddress}}/api/Payload
+Content-Type: application/json
+
+{
+  "content": ""
+}
+
+###
+
+### Test 3: POST Payload - Null Content (should fail validation)
+POST {{PayloadApi_HostAddress}}/api/Payload
+Content-Type: application/json
+
+{
+  "content": null
+}
+
+###
+
+### Test 4: POST Payload - Large Content
+POST {{PayloadApi_HostAddress}}/api/Payload
+Content-Type: application/json
+
+{
+  "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+}
 
 ###
