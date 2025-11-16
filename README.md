@@ -10,6 +10,10 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 │   ├── PayloadApi/              # Main API project
 │   ├── PayloadApi.Tests/        # Unit tests
 │   └── PayloadApi.sln           # Solution file
+├── docs/                        # API documentation and test collections
+│   ├── openapi-v1.json          # OpenAPI schema for V1
+│   ├── openapi-v2.json          # OpenAPI schema for V2
+│   └── insomnia-collection.json # Insomnia test collection
 ├── k8s/                         # Kubernetes manifests
 │   ├── local/                   # Local environment
 │   ├── dev/                     # Dev environment
@@ -20,7 +24,8 @@ A .NET Core REST API that receives payloads and stores them in MySQL.
 │   └── prod.yml
 ├── scripts/
 │   ├── run-k8s.sh               # Local Kubernetes deployment script
-│   └── generate-openapi-schema.sh
+│   ├── generate-openapi-schema.sh # Generate OpenAPI schemas
+│   └── generate-insomnia-tests.sh # Insomnia collection helper
 ├── Dockerfile                   # Multi-stage build with tests
 ├── .dockerignore                # Docker build exclusions
 ├── Jenkinsfile                  # CI/CD pipeline for dev/prod
@@ -315,6 +320,50 @@ Run the schema generator whenever you:
 - Change request/response models
 - Update API documentation
 - Create a new API version
+
+## API Testing
+
+The project includes comprehensive test collections for API clients like Insomnia, Postman, or VS Code REST Client.
+
+### Insomnia Collection
+
+A pre-configured Insomnia collection is available with test requests for all API versions and environments.
+
+**Import into Insomnia:**
+
+```bash
+# View collection details and import instructions
+./scripts/generate-insomnia-tests.sh
+```
+
+Then import `docs/insomnia-collection.json` into Insomnia:
+1. Open Insomnia
+2. Click 'Create' → 'Import'
+3. Select 'From File'
+4. Choose `docs/insomnia-collection.json`
+5. Click 'Scan' and 'Import'
+
+**Included Environments:**
+- **Local Development** - `http://localhost:5038` (for `dotnet run`)
+- **Kubernetes Local** - `http://payloadapi.local` (for local K8s)
+- **Development Cluster** - `https://payloadapi-dev.example.com`
+- **Production Cluster** - `https://payloadapi.example.com`
+
+**Included Test Requests:**
+- **API V1** - 4 test scenarios (success, errors, edge cases)
+- **API V2** - 7 test scenarios (various sources/priorities, errors)
+- **API Documentation** - OpenAPI schema endpoints (V1 & V2)
+
+### VS Code REST Client (.http files)
+
+For quick testing in VS Code with the REST Client extension:
+
+```bash
+# Open the .http file in VS Code
+code app/PayloadApi/PayloadApi.http
+```
+
+Click "Send Request" above any request to test the API.
 
 ## Running Tests
 

@@ -1,0 +1,312 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-01-15T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_payloadapi",
+      "_type": "workspace",
+      "name": "PayloadApi",
+      "description": "PayloadApi - Versioned REST API for payload management",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_payloadapi",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:5038",
+        "api_version_v1": "v1",
+        "api_version_v2": "v2"
+      }
+    },
+    {
+      "_id": "env_local",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Local Development",
+      "data": {
+        "base_url": "http://localhost:5038"
+      }
+    },
+    {
+      "_id": "env_k8s_local",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Kubernetes Local",
+      "data": {
+        "base_url": "http://payloadapi.local"
+      }
+    },
+    {
+      "_id": "env_dev",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Development Cluster",
+      "data": {
+        "base_url": "https://payloadapi-dev.example.com"
+      }
+    },
+    {
+      "_id": "env_prod",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Production Cluster",
+      "data": {
+        "base_url": "https://payloadapi.example.com"
+      }
+    },
+    {
+      "_id": "fld_v1",
+      "_type": "request_group",
+      "parentId": "wrk_payloadapi",
+      "name": "API V1 - Legacy",
+      "description": "Original API endpoints - maintained for backward compatibility"
+    },
+    {
+      "_id": "req_v1_success",
+      "_type": "request",
+      "parentId": "fld_v1",
+      "name": "POST Payload - Success",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v1 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"This is a V1 test payload\"\n}"
+      },
+      "description": "Successfully save a payload using V1 API"
+    },
+    {
+      "_id": "req_v1_long_content",
+      "_type": "request",
+      "parentId": "fld_v1",
+      "name": "POST Payload - Long Content",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v1 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"This is a much longer payload content that simulates a real-world scenario where the payload contains significant data. It could be JSON data, XML, plain text, or any other format that needs to be stored and processed by the API. The V1 API keeps things simple with just a content field.\"\n}"
+      },
+      "description": "Test V1 API with longer content"
+    },
+    {
+      "_id": "req_v1_empty_content",
+      "_type": "request",
+      "parentId": "fld_v1",
+      "name": "POST Payload - Empty Content (Error)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v1 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"\"\n}"
+      },
+      "description": "Test V1 API validation - should return 400 Bad Request"
+    },
+    {
+      "_id": "req_v1_null_content",
+      "_type": "request",
+      "parentId": "fld_v1",
+      "name": "POST Payload - Null Content (Error)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v1 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": null\n}"
+      },
+      "description": "Test V1 API validation - should return 400 Bad Request"
+    },
+    {
+      "_id": "fld_v2",
+      "_type": "request_group",
+      "parentId": "wrk_payloadapi",
+      "name": "API V2 - Enhanced",
+      "description": "Enhanced API with metadata support and structured responses"
+    },
+    {
+      "_id": "req_v2_success_full",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Success with Metadata",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"This is a V2 test payload with enhanced features\",\n  \"source\": \"insomnia-client\",\n  \"priority\": \"high\"\n}"
+      },
+      "description": "Successfully save a payload with full metadata using V2 API"
+    },
+    {
+      "_id": "req_v2_success_minimal",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Minimal (Content Only)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"Minimal V2 payload - source and priority will use defaults\"\n}"
+      },
+      "description": "Test V2 API with only required fields (source=null, priority=normal)"
+    },
+    {
+      "_id": "req_v2_mobile_high",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Mobile App (High Priority)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"User feedback from mobile app - critical bug report\",\n  \"source\": \"mobile-app\",\n  \"priority\": \"high\"\n}"
+      },
+      "description": "Simulate high-priority payload from mobile app"
+    },
+    {
+      "_id": "req_v2_web_normal",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Web App (Normal Priority)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"Regular analytics data from web application\",\n  \"source\": \"web-app\",\n  \"priority\": \"normal\"\n}"
+      },
+      "description": "Simulate normal-priority payload from web app"
+    },
+    {
+      "_id": "req_v2_batch_low",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Batch Job (Low Priority)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"Scheduled batch processing results - can be processed later\",\n  \"source\": \"batch-processor\",\n  \"priority\": \"low\"\n}"
+      },
+      "description": "Simulate low-priority payload from batch job"
+    },
+    {
+      "_id": "req_v2_empty_content",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Empty Content (Error)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"\",\n  \"source\": \"test-client\",\n  \"priority\": \"high\"\n}"
+      },
+      "description": "Test V2 API validation - should return 400 with structured error response"
+    },
+    {
+      "_id": "req_v2_long_content",
+      "_type": "request",
+      "parentId": "fld_v2",
+      "name": "POST Payload - Large Content",
+      "method": "POST",
+      "url": "{{ base_url }}/api/{{ api_version_v2 }}/Payload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"content\": \"This is a much longer payload that simulates real-world data. In production, this could be a JSON dump from an analytics event, a serialized object, log data, or any other structured or unstructured content that needs to be persisted. The V2 API adds metadata tracking so we know where this data came from and how urgently it needs to be processed. This helps with prioritization, debugging, and auditing.\",\n  \"source\": \"analytics-service\",\n  \"priority\": \"normal\"\n}"
+      },
+      "description": "Test V2 API with larger content payload"
+    },
+    {
+      "_id": "fld_docs",
+      "_type": "request_group",
+      "parentId": "wrk_payloadapi",
+      "name": "API Documentation",
+      "description": "OpenAPI schema endpoints (Development environment only)"
+    },
+    {
+      "_id": "req_openapi_v1",
+      "_type": "request",
+      "parentId": "fld_docs",
+      "name": "GET OpenAPI V1 Schema",
+      "method": "GET",
+      "url": "{{ base_url }}/openapi/v1.json",
+      "headers": [],
+      "description": "Download OpenAPI 3.1 schema for V1 API (Development only)"
+    },
+    {
+      "_id": "req_openapi_v2",
+      "_type": "request",
+      "parentId": "fld_docs",
+      "name": "GET OpenAPI V2 Schema",
+      "method": "GET",
+      "url": "{{ base_url }}/openapi/v2.json",
+      "headers": [],
+      "description": "Download OpenAPI 3.1 schema for V2 API (Development only)"
+    }
+  ]
+}
