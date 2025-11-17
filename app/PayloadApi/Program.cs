@@ -105,6 +105,8 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
+app.MapGet("/", () => "OK");
+
 logger.LogInformation("PayloadApi started successfully. Listening on {Urls}",
     string.Join(", ", builder.WebHost.GetSetting("urls")?.Split(';') ?? new[] { "default" }));
 
